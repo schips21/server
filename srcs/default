@@ -1,0 +1,29 @@
+server {
+	listen 80;
+	listen [::]:80;
+	server_name schips;
+	return 301 https://$host$request_uri;
+}
+
+server {
+	listen 443 ssl ;
+	listen [::]:443 ssl ;
+
+	server_name schips;
+
+	ssl_certificate /local_host.crt;
+	ssl_certificate_key /local_host.key;
+
+	root /var/www/schips;
+	index index.html index.htm index.nginx-debian.html index.php;
+
+	location / {
+		autoindex on;
+		try_files $uri $uri/ =404;
+	}
+
+	location ~ \.php$ {
+		include snippets/fastcgi-php.conf;
+		fastcgi_pass unix:/run/php/php7.3-fpm.sock;
+	}
+}
